@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Solar Sage – How It Works</title>
+<style>
+:root{--bg:#f7f9f8;--card:#fff;--ink:#0f2a2e;--muted:#4a6468;--acc:#06525c;--hi:#e8f3f1;--line:#d6e2df}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0e1617;--card:#152123;--ink:#e6efee;--muted:#9fb5b3;--acc:#5fc4b8;--hi:#1b2d2f;--line:#26393b}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.w{max-width:980px;margin:0 auto;padding:28px 16px 60px}h1{font-size:30px;margin:0 0 4px}h2{margin:40px 0 10px;font-size:23px;color:var(--acc)}
+.sub{color:var(--muted);margin:0 0 18px}.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:14px 0}
+.t{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}.t b{display:block;font-size:22px;color:var(--acc)}.t span{font-size:13px;color:var(--muted)}
+ol.steps{list-style:none;counter-reset:s;padding:0;margin:0}ol.steps li{counter-increment:s;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px 12px 54px;margin:8px 0;position:relative}
+ol.steps li:before{content:counter(s);position:absolute;left:14px;top:12px;width:28px;height:28px;border-radius:50%;background:var(--acc);color:#fff;font-weight:700;display:grid;place-items:center;font-size:14px}
+li b.k{color:var(--acc)}.kw{display:inline-block;background:var(--hi);border-radius:6px;padding:1px 7px;margin:2px;font-size:13px}
+code,.f{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--hi);padding:1px 6px;border-radius:5px;font-size:14px}
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:12px;overflow:hidden;font-size:15px}td,th{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:var(--hi)}
+.qa{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:8px 0}.qa p{margin:4px 0 0}.qa b{color:var(--acc)}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0}.flow span{background:var(--acc);color:#fff;border-radius:8px;padding:6px 10px;font-size:14px}.flow i{color:var(--muted);font-style:normal}
+footer{margin-top:40px;color:var(--muted);font-size:13px}
+</style></head><body><div class="w">
+<h1>Solar Sage – how the system works</h1>
+<p class="sub">Two pipelines, explained simply: (A) the Thapar plant-data analysis and (B) the panel image analysis. Group 62, TIET.</p>
+
+<div class="tiles">
+<div class="t"><b>2.95 MWp</b><span>Thapar plant, 25 blocks, 35 inverters</span></div>
+<div class="t"><b>17 months</b><span>real plant data, Jul 2025 – Nov 2026</span></div>
+<div class="t"><b>₹91,011/yr</b><span>net saving from smarter cleaning (up to ₹5.54 lakh/yr)</span></div>
+<div class="t"><b>₹7.8 lakh/yr</b><span>energy lost to inverter downtime, now flagged</span></div>
+</div>
+
+<h2>A. Thapar plant data → cleaning plan</h2>
+<div class="flow"><span>Plant data</span><i>→</i><span>Weather</span><i>→</i><span>Clean data</span><i>→</i><span>Expected energy</span><i>→</i><span>PR &amp; soiling</span><i>→</i><span>Model choice</span><i>→</i><span>Cost optimisation</span><i>→</i><span>Downtime</span><i>→</i><span>Plan</span></div>
+<ol class="steps">
+<li><b class="k">Collect plant data.</b> Exported from the Solar Link monitoring portal (plant FP-924): daily and 5-minute inverter energy, pyranometer irradiance, plant capacity. <span class="kw">SCADA export</span><span class="kw">inverter-level data</span></li>
+<li><b class="k">Add weather.</b> Rain, temperature and wind from ERA5; dust (PM10) from CAMS – free, peer-reviewed reanalysis datasets for Thapar's exact coordinates. <span class="kw">ERA5</span><span class="kw">CAMS</span></li>
+<li><b class="k">Clean the data.</b> Remove 12 impossible logger "catch-up" days, flag outages, treat the irradiance channel correctly as horizontal (GHI). <span class="kw">data quality</span></li>
+<li><b class="k">Expected energy.</b> Sun position → sunlight on the tilted panel (<span class="kw">plane-of-array</span>) → cell temperature (<span class="kw">NOCT model</span>) → power with <span class="f">γ = −0.29 %/°C</span> and 0.96 system losses.</li>
+<li><b class="k">Performance.</b> <span class="f">PR = Yf ÷ Yr</span> (IEC 61724-1). Example 15 Oct: 3.67 ÷ 4.21 = <b>87.2 %</b>. Performance index = actual ÷ expected.</li>
+<li><b class="k">Soiling ratio.</b> Heavy rain (≥ 8 mm) washes panels → that day is the "clean" reference. Output drop since then = dust loss. <span class="kw">soiling ratio</span><span class="kw">natural cleaning events</span></li>
+<li><b class="k">Choose the dust model honestly.</b> Several models compared by <span class="kw">leave-one-out cross-validation</span>, then an independent audit with 3 scenarios: A 0.05, <b>B 0.10</b>, C 0.258 %/day.</li>
+<li><b class="k">Cost optimisation.</b> Best cleaning interval <span class="f">T* = √(2C ÷ (p·E·r))</span> → <b>clean every 31 dry days</b>, 4 rounds/yr, net <b>₹91,011/yr</b>; break-even ₹10.70 per module. <span class="kw">economic optimisation</span><span class="kw">sensitivity analysis</span><span class="kw">Monte Carlo</span></li>
+<li><b class="k">Downtime detection.</b> Each inverter vs the campus median; below 50 % = outage. Found <b>81,735 kWh (₹6.33 lakh)</b> lost in 295 days – 8× the dust saving. <span class="kw">anomaly detection</span></li>
+<li><b class="k">Plan &amp; dashboard.</b> 14-day forecast → which block to clean, when, and what it is worth; live map, CSV exports.</li>
+</ol>
+
+<h2>B. Panel photo → dirt score → action</h2>
+<div class="flow"><span>Upload</span><i>→</i><span>Pre-process</span><i>→</i><span>Find panels</span><i>→</i><span>Flatten</span><i>→</i><span>Pixel score P</span><i>→</i><span>Vision grade V</span><i>→</i><span>Fuse S</span><i>→</i><span>Thermal</span><i>→</i><span>Action + PDF</span></div>
+<ol class="steps">
+<li><b class="k">Upload.</b> Phone, drone or thermal photos (JPG, HEIC, FLIR/DJI radiometric R-JPEG, temperature CSV).</li>
+<li><b class="k">Pre-process.</b> Detect image type; for thermal files read the real temperatures embedded in the file (<span class="kw">Planck conversion</span>).</li>
+<li><b class="k">Find every panel.</b> A pretrained <span class="kw">vision-language model</span> used <span class="kw">zero-shot</span> outlines each panel (4 corners) and names dirt and defects. Big drone shots are split into overlapping <span class="kw">tiles</span>.</li>
+<li><b class="k">Flatten.</b> OpenCV refines each outline and applies a <span class="kw">perspective transform</span> so every panel is analysed face-on.</li>
+<li><b class="k">Pixel score P (our algorithm).</b> Mask the cell grid lines → find the clean-glass colour (<span class="kw">k-means</span> in <span class="kw">CIELAB</span>) → colour difference per pixel (<span class="kw">ΔE2000</span>) → coverage, opacity, contrast loss, deposits → <span class="f">P = 100·(1 − e<sup>−z</sup>)</span>.</li>
+<li><b class="k">Vision grade V.</b> The model's own 0–100 grade plus dirt type (dust, bird droppings, lichen…) and defects (cracks, burn marks).</li>
+<li><b class="k">Fuse.</b> <span class="f">S = 0.7·P + 0.3·V</span>. Measurement dominates; if P and V differ by &gt; 25 points the panel is flagged for a second look. <span class="kw">sensor fusion</span><span class="kw">explainable AI</span></li>
+<li><b class="k">Classify &amp; act.</b> Clean &lt; 20 · partly soiled 20–55 · heavily soiled &gt; 55 → no action / wash within N days / spot-clean now / maintenance.</li>
+<li><b class="k">Thermal hotspots.</b> Hotspot if <span class="f">ΔT ≥ 10 K</span> above the panel median (IEC TS 62446-3).</li>
+<li><b class="k">Output.</b> Annotated image, per-panel table, saved inspection, PDF report.</li>
+</ol>
+
+<h2>Likely professor questions</h2>
+<div class="qa"><b>Q. Why a cloud model? Why not train your own (e.g. YOLO)?</b>
+<p>Training needs thousands of labelled photos of <i>our</i> panels with dirt marked by hand – no such Thapar dataset exists, and a small one would overfit. A pretrained model works zero-shot today. We did not hand it the decision: our own pixel measurement carries 70 % of the score, the thermal rule is a standard, and every number is explainable. Next step: the inspections we save become a labelled dataset to fine-tune a small on-device model.</p></div>
+<div class="qa"><b>Q. What is your own contribution then?</b>
+<p>The whole pipeline: panel geometry and flattening, the ΔE2000 soiling algorithm, the fusion and disagreement check, the IEC thermal rule, the cleaning economics, the downtime detector, the ESP32→cloud link and the dashboard. The model is one component, like using a library.</p></div>
+<div class="qa"><b>Q. Why 0.7 and 0.3?</b>
+<p>A design choice: measured pixels are objective and repeatable, so they get most weight; the vision grade adds context (type of dirt, defects). Calibrating these weights on labelled field photos is listed as future work.</p></div>
+<div class="qa"><b>Q. How accurate is it?</b>
+<p>Checked on public, licensed solar images: clean drone panels score 2–12, visibly dusty panels 40–75, droppings and hotspots are found. A formal accuracy figure needs a labelled Thapar set – that is our validation plan, we do not claim a number.</p></div>
+<div class="qa"><b>Q. Is the plant data real?</b>
+<p>Yes – exported from the plant's own monitoring portal, plus public ERA5/CAMS weather. Dust % and savings are <i>model estimates</i> built on that data and are labelled as such.</p></div>
+<div class="qa"><b>Q. Why did savings fall from ₹3.65 lakh to ₹0.91 lakh?</b>
+<p>Our own audit showed the old dust rate came from the detector, not the dust. Real rain-wash data caps dust near 2–3 %. We corrected it – and found downtime (₹7.8 lakh/yr) is the bigger lever.</p></div>
+
+<h2>Keywords to use</h2>
+<p><span class="kw">plane-of-array irradiance</span><span class="kw">NOCT</span><span class="kw">performance ratio (IEC 61724-1)</span><span class="kw">soiling ratio</span><span class="kw">leave-one-out cross-validation</span><span class="kw">economic optimisation</span><span class="kw">sensitivity / Monte Carlo</span><span class="kw">anomaly detection</span><span class="kw">zero-shot vision-language model</span><span class="kw">perspective transform</span><span class="kw">CIELAB / ΔE2000</span><span class="kw">k-means</span><span class="kw">sensor fusion</span><span class="kw">IEC TS 62446-3</span><span class="kw">radiometric thermography</span><span class="kw">ESP32 · LoRa · cloud (Supabase)</span></p>
+
+<footer>Solar Sage · Group 62 · Thapar Institute of Engineering &amp; Technology · Patiala</footer>
+</div></body></html>
